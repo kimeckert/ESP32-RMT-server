@@ -3,19 +3,17 @@ WiFi server that drives low-level commands to the RMT peripheral
 
 __NOTE: Construction in progress__
 
-Compiles with ESP-IDF. Receives an HTTP POST message and decodes commands contained in the message body.
+Receives an HTTP POST message and decodes commands contained in the message body.
 These commands control the RMT peripheral and drive an infrared LED.
 The commands are low-level mark-and-space commands.
 There is no protocol decode implemented in this code.
 This allows the RMT to transmit virtually any infrared protocol.
+Compiles with ESP-IDF.
 
-HTTP POST message consists of one or more text lines.
-Lines are separated by newline (\n) characters.
-Returns (\r) are allowed, but are ignored.
+* The HTTP POST message consists of one or more text lines. Lines are separated by newline (\n) characters. Returns (\r) are allowed, but are ignored.
+* Each line consists of comma-separated values. Each line starts with one character that identifies the type of data contained on the remainder of the line.
 
-Each line consists of comma-separated values.
-
-Each line starts with one character that identifies the type of data contained on the remainder of the line.
+# Commands
 
 The commands closely follow the RMT register/RAM definitions:
 * __c,[div],[high,low]__
