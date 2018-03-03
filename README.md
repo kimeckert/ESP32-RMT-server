@@ -3,7 +3,7 @@ WiFi server that drives low-level commands to the RMT peripheral
 
 __NOTE: Construction in progress__
 
-Receives an HTTP POST message and decodes commands contained in the message body.
+Receives an HTTP POST request and decodes commands contained in the request body.
 These commands control the RMT peripheral and drive an infrared LED.
 The commands are low-level mark-and-space commands.
 There is no protocol decode implemented in this code.
@@ -15,7 +15,7 @@ Compiles with ESP-IDF.
 
 # Commands
 
-The commands closely follow the RMT register/RAM definitions:
+The commands closely follow the RMT register/RAM definitions. Refer to the ESP32 documentation at http://esp32.net/
 * __c,[div],[high,low]__
   * Sets the channel clock frequency and the carrier clock frequency and duty cycle.
   * __[div]__: div_cnt, RMT counter clock divider. Text representation of an integer between 1 and 255, inclusive.
