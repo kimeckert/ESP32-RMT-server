@@ -1,5 +1,5 @@
 # ESP32-RMT-server
-WiFi server that drives low-level commands to the RMT peripheral
+WiFi server that drives low-level commands to the ESP32 RMT peripheral
 
 __NOTE: Construction in progress__
 
