@@ -24,18 +24,18 @@ The commands closely follow the RMT register/RAM definitions. Refer to the ESP32
   * __[high]__ and __[low]__: High (RMT_CARRIER_HIGH_CHn) and low (RMT_CARRIER_LOW_CHn) duration of the carrier waveform. Text representation of integers between 1 and 65,535, inclusive. The unit of carrier_high/low is one channel clock period.
 * __t,[non-zero duration], ... ,0__
   * Defines a sequence of durations of IR transmission bits, both modulated at the carrier frequency (mark) and idle (space).
-  * __[non-zero duration]__: A text representation of a non-zero integer between -32,767 and 32,767, inclusive. Duration of the transmit burst. A zero value denotes the end of the transmission sequence.
+  * __[non-zero duration]__: A text representation of a non-zero integer between -32,767 and 32,767, inclusive. These integers define the durations of transmit marks and spaces. A zero value denotes the end of the transmission sequence.
     * Positive integers create a burst of IR output (mark) at the carrier frequency, with duration of [non-zero-duration] channel clock periods.
     * Negative integers create a duration on the IR output with no carrier (space).  The duration is in channel clock periods.
     * Positive and negative values do not need to be alternated. Either positive or negative values can follow a positive or negative value.
   * A zero value tells the RMT to stop the RMT transmission sequence.  The last value on the line must be a zero. A zero anywhere else on the line will terminate the transmission sequence at that point. When terminated, the RMT transmissions can be started again with a command on a new line.
-  * The RMT RAM can store a maximum of 128 duration values. If more than 128 values are entered on a line, the driver implements the RMT wrap-around mode to transmit the longer sequence. The terminating zero duration counts as one of the 128 duration values.
+  * The RMT RAM can store a maximum of 128 duration values. If a line contains more than 128 values, the driver implements the RMT wrap-around mode to transmit the longer sequence. The terminating zero duration counts as one of the 128 duration values.
 * __d,[milliseconds delay]__
   * __[milliseconds delay]__: Create a delay before decoding the next line. Used to create a realtively long gap between IR tramsmissions. Text representation of a positive non-zero integer of the number of milliseconds for the delay.  Implemented with the FreeRTOS function:
     * vTaskDelay( milliseconds delay / portTICK_PERIOD_MS ); and has the limitations of that function. See the documentation for this function for the maximum possible delay, which depends on the tick period of your system and the data type used for this function. If your tick period is 1mS and the data type uses a 16-bit unsigned int, the maximum duration is about 65 seconds.
 
 # Definitions
-* __HTTP POST Request__: A combination of request header and request body, sent to the ESP32. The header and body are separated by a blank line.
+* __HTTP POST Request__: A combination of request header and request body, sent to the ESP32. Your web browser automatically inserts a blank line between the header and body.
 * __Request Header__: Your browser creates most of this.  Important options for this application are:
   * __Request Type__: POST. Needed to avoid CORS restrictions and to contain enough information for the ESP32.
   * __Content-Type__: text/plain. Needed to avoid CORS restrictions.
