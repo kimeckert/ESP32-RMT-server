@@ -11,7 +11,7 @@ This allows the RMT to transmit virtually any infrared protocol.
 Compiles with [ESP-IDF](https://github.com/espressif/esp-idf)
 
 * The HTTP POST request body consists of one or more text lines. Lines are separated by newline (\n) characters. Returns (\r) are allowed, but are ignored.
-* Each line consists of comma-separated values. There is one command on each line. Each line starts with one character that identifies the type of data contained on the remainder of the line.
+* Each line consists of comma-separated values. There is one command on each line. Each line starts with one character that identifies the type of command for this line.
 
 The intent is that a JavaScript program contained in an HTML file, running on a web browser and served by a host machine (not the ESP32) will create these low-level RMT commands and transmit them to the ESP32. An example HTML file will be part of this repository. A real application will have its own repository.
 
@@ -19,7 +19,7 @@ The intent is that a JavaScript program contained in an HTML file, running on a 
 
 The commands closely follow the RMT register/RAM definitions. Refer to the ESP32 documentation at http://esp32.net/ .
 * __c,[div],[high],[low]__
-  * Sets the channel clock frequency and the carrier clock frequency and duty cycle.
+  * Sets the RMT channel clock frequency and the carrier clock frequency and duty cycle.
   * __[div]__: RMT channel clock divider (RMT_DIV_CNT_CHn). Text representation of an integer between 1 and 255, inclusive. Defines the RMT channel clock division ratio.  The channel clock is divided from the source clock.
   * __[high]__ and __[low]__: High (RMT_CARRIER_HIGH_CHn) and low (RMT_CARRIER_LOW_CHn) duration of the carrier waveform. Text representation of integers between 1 and 65,535, inclusive. The unit of carrier_high/low is one channel clock period.
 * __t,[non-zero duration], ... ,0__
@@ -44,4 +44,4 @@ The commands closely follow the RMT register/RAM definitions. Refer to the ESP32
   * a newline (\n), or
   * a return (\r) and a newline (\n), or
   * the end of the request body
-* __CORS__: Cross-Orgin-Resource-Sharing. Keeps your compliant browser from fetching information from a different server than the original web page was served from. This is an important security feature.
+* __CORS__: Cross-Orgin-Resource-Sharing. Keeps your compliant browser from fetching information from a different server than the original web page was served from. This is an important internet security feature.
