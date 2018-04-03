@@ -1,7 +1,7 @@
 # ESP32-RMT-server
 WiFi server that drives low-level commands to the ESP32 RMT peripheral
 
-__NOTE: Construction in progress__
+__NOTE: Code is currently beta__
 
 The ESP32 receives an HTTP POST request and decodes commands contained in the request body.
 These commands control the RMT peripheral and drive an infrared LED.
@@ -20,8 +20,8 @@ The intent is that a JavaScript program contained in an HTML file, running on a 
 The commands closely follow the RMT register/RAM definitions. Refer to the ESP32 documentation at http://esp32.net/ .
 * __c,[div],[high],[low]__
   * Sets the RMT channel clock frequency and the carrier clock frequency and duty cycle.
-  * __[div]__: RMT channel clock divider (RMT_DIV_CNT_CHn). Text representation of an integer between 1 and 255, inclusive. Defines the RMT channel clock division ratio.  The channel clock is divided from the source clock.
-  * __[high]__ and __[low]__: High (RMT_CARRIER_HIGH_CHn) and low (RMT_CARRIER_LOW_CHn) duration of the carrier waveform. Text representation of integers between 1 and 65,535, inclusive. The unit of carrier_high/low is one channel clock period.
+  * __[div]__: RMT channel clock divider (RMT_DIV_CNT_CHn). Text representation of an integer between 1 and 255, inclusive. Defines the RMT channel clock division ratio.  The channel clock is divided from the source clock.  The ESP32 source clock is 80MHz.
+  * __[high]__ and __[low]__: High (RMT_CARRIER_HIGH_CHn) and low (RMT_CARRIER_LOW_CHn) duration of the carrier waveform. Text representation of integers between 1 and 65,535, inclusive. The unit of carrier_high/low is one source clock period.
 * __t,[non-zero duration], ... ,0__
   * Defines a sequence of durations of IR transmission bits, both modulated at the carrier frequency (mark) and idle (space).
   * __[non-zero duration]__: A text representation of a non-zero integer between -32,767 and 32,767, inclusive. These integers define the durations of transmit marks and spaces. A zero value denotes the end of the transmission sequence.
