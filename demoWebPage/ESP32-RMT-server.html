@@ -1,0 +1,213 @@
+<html>
+<head>
+	
+<meta charset="utf-8"/>
+<title>ESP32-RMT-server</title>
+
+<style>
+html, body { font-family: sans-serif; }
+table.b, td.b, th.b { border:thin solid black; border-collapse: collapse; }
+th.bl { background-color: #ccccff; }
+input[type=text] { background-color: lightGray; color: black; }
+input[type=button] { font-weight:bold; background-color: #ccccff; color:black; }
+.myRed { background-color: #ffcccc; }
+.myGreen { background-color: #ccffcc; }
+.myBlue { background-color: #ccccff; }
+.cb { text-align: center; 
+	font-weight: bold;
+	border-top: solid black thin;
+	border-right: solid black thin;
+	border-left: solid black thin;  }
+.sel { border-bottom: none; }
+.unsel { border-bottom: solid black thin; }
+a { cursor: pointer; }
+</style>
+
+<script type="text/javascript">
+	
+// URL of the ESP32
+var myUrl = '';
+// ESP32 clock frequency = 80MHz
+var freq = 80 * 1000 * 1000;
+var divisor = 80;
+var clockHigh = 960;
+var clockLow = 1040;
+// channel frequency
+var chFreq;
+
+// send POST message to ESP32
+function post(msg) {
+	myUrl = document.getElementById("myUrl").value;
+	var xhttp = new XMLHttpRequest();
+	console.log('http: sending');
+	myStat('(Sending) ');
+
+	xhttp.onreadystatechange = function() {
+		if( xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200 ) {
+			console.log('http: onreadystatechange: ' + xhttp.responseText);
+  		}
+	}
+	
+	xhttp.onerror = function() {
+		console.log( 'http: There was an error');
+		myStat('');
+	}
+
+	xhttp.open("POST", "http:/" + myUrl, true);
+	// Content-Type text/plain is needed to prevent the need for a cross-origin preflight
+	xhttp.setRequestHeader("Content-Type", "text/plain");
+	xhttp.send(msg);
+}
+function sendClk() {
+	var e = document.getElementById("cmd");
+	if ( e && e.innerHTML ) {
+		post(e.innerHTML);
+	}
+}
+function sendTx() {
+	var e = document.getElementById("txCmd");
+	if ( e && e.value ) {
+		post(e.value);
+	}
+}
+function myStat(s) {
+	var e1 = document.getElementById('txStat');
+	var e2 = document.getElementById('fStat');
+	console.log('stat ' + s);
+	if ( /error/i.test(s) ) {
+		e1.innerHTML = '';
+		e2.innerHTML = '';
+	}
+	else {
+		e1.innerHTML = s;
+		e2.innerHTML = s;
+	}
+}
+// change the channel clock division ration
+function changeDiv() {
+	var d = document.getElementById("div");
+	if ( d && d.value ) {
+		divisor = d.value;
+		chFreq = freq / d.value;
+	}
+	changeCarrier();
+	
+	document.getElementById("chf").innerHTML = chFreq / 1000;
+	document.getElementById("res").innerHTML = 
+		1000 * 1000 * d.value / freq;
+	document.getElementById("max").innerHTML = 
+		2**15 * 1000 * 1000 * d.value / freq;
+}
+
+// change the carrier-high or carrier-low durations
+function changeCarrier() {
+	var d = document.getElementById("div");
+	var cah = document.getElementById("ch");
+	var cal = document.getElementById("cl");
+	if ( cah && cal && cah.value && cal.value ) {
+		document.getElementById("ccf").innerHTML = 
+			freq / 1000 / ( Number(cah.value) + Number(cal.value) );
+		document.getElementById("ccd").innerHTML = 
+			100 * Number(cah.value) / ( Number(cah.value) + Number(cal.value) );
+		if ( d && d.value ) {
+			document.getElementById("cmd").innerHTML = 
+				"c," + d.value + ',' + cah.value + ',' + cal.value;
+		}
+	}
+}
+
+</script>
+</head>
+<body>
+<h1>ESP32-RMT-server</h1>
+
+<p>This is an example of how JavaScript can sent POST commands directly to an ESP32 that is running 
+the application <strong>ESP32-RMT-server</strong>.  See the description on
+<a href="https://github.com/kimeckert/ESP32-RMT-server" 
+target="_blank">https://github.com/kimeckert/ESP32-RMT-server</a>.
+Use one of the following tools to compose and transmit commands to the ESP32.
+</p>
+
+<hr />
+
+<h2>ESP32 IP Address</h2>
+<p>Enter the IP address of your ESP32:
+<input type="text" size="20" id="myUrl">
+, such as '192.168.1.25'.
+This software needs the IP address to send the POST command.</p>
+
+<hr />
+
+<h2>IR Transmissions</h2>
+<p>Enter one or more lines of text to send to the RMT. 
+Each line can be any command that the ESP32-RMT-server can receive.
+All lines are sent in one POST message when you click the SEND button.
+<br /><textarea rows="6" cols="80" id="txCmd"></textarea>
+<br />
+<input type="button" value="SEND" onClick="sendTx()">
+<span id="txStat"></span>
+</p>
+
+<hr />
+
+<h2>Frequencies</h2>
+You can send clock variables in the box above, or you can use the table below to
+calculate the effect that those variables will have on the ESP32.
+The initial values in the table reflect the default values used in the ESP32-RMT-server software.
+<table class="b">
+<tr><th class="b bl">Item</th>
+	<th class="b bl">Value</th>
+	<th class="b bl">Units</th>
+	<th class="b bl">Description</th></tr>
+<tr><td class="b">ESP32 Clock frequency</td>
+	<td class="b"><span id="f"></span></td>
+	<td class="b">MHz</td>
+	<td class="b">Source Clock</td></tr>
+<tr><td class="b">RMT_DIV_CNT_CHn</td>
+	<td class="b"><input type="text" id="div" onChange="changeDiv()" size="10"></td>
+	<td class="b"></td>
+	<td class="b">Channel clock divisor</td></tr>
+<tr><td class="b">Channel Clock Frequency</td>
+	<td class="b"><span id="chf"></span></td>
+	<td class="b">KHz</td>
+	<td class="b">= Source Clock frequency / RMT_DIV_CNT_CHn</td></tr>
+<tr><td class="b">RMT_CARRIER_HIGH_CHn</td>
+	<td class="b"><input type="text" id="ch" onChange="changeCarrier()" size="10"></td>
+	<td class="b"></td>
+	<td class="b">Carrier clock high duration, in Source Clock periods</td></tr>
+<tr><td class="b">RMT_CARRIER_LOW_CHn</td>
+	<td class="b"><input type="text" id="cl" onChange="changeCarrier()" size="10"></td>
+	<td class="b"></td>
+	<td class="b">Carrier clock low duration, in Source Clock periods</td></tr>
+<tr><td class="b">Carrier clock frequency</td>
+	<td class="b"><span id="ccf"></span></td>
+	<td class="b">KHz</td>
+	<td class="b">= Source Clock Frequency / (RMT_CARRIER_HIGH_CHn + RMT_CARRIER_LOW_CHn)</td></tr>
+<tr><td class="b">Carrier clock duty cycle</td>
+	<td class="b"><span id="ccd"></span></td>
+	<td class="b">Percent</td>
+	<td class="b">= RMT_CARRIER_HIGH_CHn / (RMT_CARRIER_HIGH_CHn + RMT_CARRIER_LOW_CHn)</td></tr>
+<tr><td class="b">Pulse Duration Resolution</td>
+	<td class="b"><span id="res"></span></td>
+	<td class="b">Microseconds</td>
+	<td class="b"> = One Channel clock period</td></tr>
+<tr><td class="b">Pulse Maximum Duration</td>
+	<td class="b"><span id="max"></span></td>
+	<td class="b">Microseconds</td>
+	<td class="b"> = (2^15) * Channel clock period</td></tr>
+<tr><td class="b">RMT_server command</td>
+	<td class="b"><span id="cmd"></span></td>
+	<td class="b" align="center"><input type="button" value="SEND" onClick="sendClk()"></td>
+	<td class="b"><span id="fStat"></span>Send the clock command to the ESP32</td></tr>
+</table>
+
+<script type="text/javascript">
+	document.getElementById("f").innerHTML = freq / 1000 / 1000;
+	document.getElementById("div").value = divisor;
+	changeDiv();
+	document.getElementById("ch").value = clockHigh;
+	document.getElementById("cl").value = clockLow;
+	changeCarrier();
+</script>
+</body>
+</html>
