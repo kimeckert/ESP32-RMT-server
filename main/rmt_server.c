@@ -1,10 +1,17 @@
-/*
-	RMT transmit control over http server.
+/* RMT transmit control over http server.
 	* 
 	* HTTP server code modified from
 	* https://github.com/feelfreelinux/myesp32tests/blob/master/examples/http_server.c
+	* That software is distributed under GNU General Public License
 	* 
 	* RMT code modified from example: rmt_nec_tx_rx
+	* That software is distributed under Public Domain (or CC0 licensed, at your option.)
+	* 
+	* Additional software included in this application is distributed under
+	* Public Domain (or CC0 licensed, at your option.)
+	* 
+	* This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	* CONDITIONS OF ANY KIND, either express or implied.
 */
 
 #include <string.h>
