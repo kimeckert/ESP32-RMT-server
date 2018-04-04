@@ -13,7 +13,7 @@ Compiles with [ESP-IDF](https://github.com/espressif/esp-idf)
 * The HTTP POST request body consists of one or more text lines. Lines are separated by newline (\n) characters. Returns (\r) are allowed, but are ignored.
 * Each line consists of comma-separated values. There is one command on each line. Each line starts with one character that identifies the type of command for this line.
 
-The intent is that a JavaScript program contained in an HTML file, running on a web browser and served by a host machine (not the ESP32) will create these low-level RMT commands and transmit them to the ESP32. An example HTML file will be part of this repository. A real application will have its own repository.
+The intent is that a JavaScript program contained in an HTML file, running on a web browser and served by a host machine (not the ESP32) will create these low-level RMT commands and transmit them to the ESP32. An example HTML file is part of this repository. A real application will have its own repository.
 
 # Commands
 
