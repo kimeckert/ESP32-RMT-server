@@ -46,8 +46,8 @@ const static char http_debug2[] = "<html><head><title>ESP32</title></head><body>
 const static char http_debug3[] = "</pre></body></html>";
 
 // how to connect to my local WiFi
-#define WIFI_SSID "ATTxey7ywa"
-#define WIFI_PASS "ey7azf7x76vv"
+#define WIFI_SSID "Your SSID Here"
+#define WIFI_PASS "Your password here"
 
 // RMT values
 #define RMT_TX_CHANNEL RMT_CHANNEL_0
