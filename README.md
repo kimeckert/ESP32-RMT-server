@@ -18,6 +18,7 @@ The intent is that a JavaScript program contained in an HTML file, running on a 
 # Commands
 
 The commands closely follow the RMT register/RAM definitions. Refer to the ESP32 documentation at http://esp32.net/ .
+Lines that do not follow these specifictions are silently ignored and the next line is processed.
 * __c,[div],[high],[low]__
   * Sets the RMT channel clock frequency and the carrier clock frequency and duty cycle.
   * __[div]__: RMT channel clock divider (RMT_DIV_CNT_CHn). Text representation of an integer between 1 and 255, inclusive. Defines the RMT channel clock division ratio.  The channel clock is divided from the source clock.  The ESP32 source clock is 80MHz.
