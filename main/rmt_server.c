@@ -116,8 +116,8 @@ static void rmt_tx_init() {
 	rmt_tx.mem_block_num = 1;
 	rmt_tx.clk_div = RMT_CLK_DIV;
 	rmt_tx.tx_config.loop_en = false;
-	rmt_tx.tx_config.carrier_duty_percent = 50;
-	rmt_tx.tx_config.carrier_freq_hz = 40000;
+	rmt_tx.tx_config.carrier_duty_percent = 30;
+	rmt_tx.tx_config.carrier_freq_hz = 38000;
 	rmt_tx.tx_config.carrier_level   = RMT_CARRIER_LEVEL_HIGH;
 	rmt_tx.tx_config.carrier_en      = true;
 	rmt_tx.tx_config.idle_level      = RMT_IDLE_LEVEL_LOW;
