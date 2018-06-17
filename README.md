@@ -1,7 +1,7 @@
 # ESP32-RMT-server
 WiFi server that drives low-level commands to the ESP32 RMT peripheral
 
-__NOTE: Code is currently beta__
+__NOTE: This code seems to work reliably and has all the features that I plan to implement. It is released.__
 
 The ESP32 receives an HTTP POST request and decodes commands contained in the request body.
 These commands control the RMT peripheral and drive an infrared LED.
@@ -45,4 +45,5 @@ Lines that do not follow these specifictions are silently ignored and the next l
   * a newline (\n), or
   * a return (\r) and a newline (\n), or
   * the end of the request body
-* __CORS__: Cross-Orgin-Resource-Sharing. Keeps your compliant browser from fetching information from a different server than the original web page was served from. This is an important internet security feature.
+* __Same-Origin-Policy__: Keeps your compliant browser from fetching information from a different server than the original web page was served from. This is an important internet security feature.
+* __CORS__: Cross-Orgin-Resource-Sharing. A complex way to allow communications between different web hosts.  This is the authorized way to skirt the Same-Origin-Policy.  See the WiKi for more information.
