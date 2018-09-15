@@ -29,7 +29,7 @@ Lines that do not follow these specifictions are silently ignored and the next l
     * Positive integers create a burst of IR output (mark) at the carrier frequency, with duration of [non-zero-duration] channel clock periods.
     * Negative integers create a duration on the IR output with no carrier (space).  The duration is in channel clock periods.
     * Positive and negative values do not need to be alternated. Either positive or negative values can follow a positive or negative value.
-  * A zero value tells the RMT to stop the RMT transmission sequence.  The last value on the line must be a zero. A zero anywhere else on the line will terminate the transmission sequence at that point. When terminated, the RMT transmissions can be started again with a command on a new line.
+  * A zero value tells the RMT to stop the RMT transmission sequence.  The last value on the line must be a zero. A zero anywhere else on the line will terminate the transmission sequence at that point. When terminated, a new RMT transmission can be started with a new command on a new line.  There will be an indeterminate delay between consecutive RMT transmissions.
   * The RMT RAM can store a maximum of 128 duration values. If a line contains more than 128 values, the driver implements the RMT wrap-around mode to transmit the longer sequence. The terminating zero duration counts as one of the duration values.
 * __d,[milliseconds delay]__
   * __[milliseconds delay]__: Create a delay before decoding the next line. Used to create a realtively long gap between IR tramsmissions. Text representation of a positive non-zero integer of the number of milliseconds for the delay.  Implemented with the FreeRTOS function:
