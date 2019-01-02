@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>ESP32 Frequencies</title>
+<style>
+table, td, th { border:thin solid black; border-collapse: collapse; }
+th { background-color: #ccccff; }
+input[type=text] { background-color: lightGray }
+</style>
+<script type="text/javascript">
+
+// ESP32 clock frequency = 80MHz
+var freq = 80 * 1000 * 1000;
+// channel frequency
+var chFreq;
+
+// send POST message to ESP32
+function post(msg) {
+	var xhttp = new XMLHttpRequest();
+	console.log('http: sending', msg);
+
+	xhttp.onreadystatechange = function() {
+		if( xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200 ) {
+			console.log('http: onreadystatechange: ' + xhttp.responseText);
+  		}
+	}
+	
+	xhttp.onload = function() {
+		console.log('http: Loaded');
+	}
+	
+	xhttp.onerror = function() {
+		console.log( 'http: There was an error');
+	}
+
+	xhttp.open("POST", "http://192.168.1.125", true);
+	// Content-Type text/plain is needed to prevent the need for a cross-origin preflight
+	xhttp.setRequestHeader("Content-Type", "text/plain");
+	xhttp.send(msg);
+}
+function sendClk() {
+	var e = document.getElementById("cmd");
+	if ( e && e.innerHTML ) {
+		post(e.innerHTML);
+	}
+}
+// change the channel clock division ratio
+function changeDiv() {
+	var d = document.getElementById("div");
+	if ( d && d.value ) { chFreq = freq / d.value; }
+	document.getElementById("chf").innerHTML = chFreq / 1000;
+	document.getElementById("res").innerHTML = 
+		1000 * 1000 * d.value / freq;
+	document.getElementById("max").innerHTML = 
+		2**15 * 1000 * 1000 * d.value / freq;
+}
+
+// change the carrier-high or carrier-low durations
+function changeCarrier() {
+	var d = document.getElementById("div");
+	var cah = document.getElementById("ch");
+	var cal = document.getElementById("cl");
+	if ( cah && cal && cah.value && cal.value ) {
+		document.getElementById("ccf").innerHTML = 
+			freq / 1000 / ( Number(cah.value) + Number(cal.value) );
+		document.getElementById("ccd").innerHTML = 
+			100 * Number(cah.value) / ( Number(cah.value) + Number(cal.value) );
+		if ( d && d.value ) {
+			document.getElementById("cmd").innerHTML = 
+				"c," + d.value + ',' + cah.value + ',' + cal.value;
+		}
+	}
+}
+
+</script>
+</head>
+<body>
+<h1>ESP32 Frequencies</h1>
+<table>
+<tr><th>Item</th><th>Value</th><th>Units</th><th>Description</th></tr>
+<tr><td>ESP32 Clock frequency</td>
+	<td><span id="f"></span></td>
+	<td>MHz</td>
+	<td></td></tr>
+<tr><td>RMT_DIV_CNT_CHn</td>
+	<td><input type="text" id="div" onChange="changeDiv()" size="10"></td>
+	<td></td>
+	<td>Channel clock divisor</td></tr>
+<tr><td>Channel Clock Frequency</td>
+	<td><span id="chf"></span></td>
+	<td>KHz</td>
+	<td>= Clock frequency / RMT_DIV_CNT_CHn</td></tr>
+<tr><td>RMT_CARRIER_HIGH_CHn</td>
+	<td><input type="text" id="ch" onChange="changeCarrier()" size="10"></td>
+	<td></td>
+	<td>Carrier clock high duration, in source clock periods</td></tr>
+<tr><td>RMT_CARRIER_LOW_CHn</td>
+	<td><input type="text" id="cl" onChange="changeCarrier()" size="10"></td>
+	<td></td>
+	<td>Carrier clock low duration, in source clock periods</td></tr>
+<tr><td>Carrier clock frequency</td>
+	<td><span id="ccf"></span></td>
+	<td>KHz</td>
+	<td></td></tr>
+<tr><td>Carrier clock duty cycle</td>
+	<td><span id="ccd"></span></td>
+	<td>Percent</td>
+	<td></td></tr>
+<tr><td>Pulse Duration Resolution</td>
+	<td><span id="res"></span></td>
+	<td>Microseconds</td>
+	<td> = One Channel clock period</td></tr>
+<tr><td>Pulse Maximum Duration</td>
+	<td><span id="max"></span></td>
+	<td>Microseconds</td>
+	<td> = (2^15) * Channel clock period</td></tr>
+<tr><td>RMT_server command</td>
+	<td><span id="cmd"></span></td>
+	<td><input type="button" value="Send" onClick="sendClk()"></td>
+	<td></td></tr>
+</table>
+
+<h2>Examples:</h2>
+<ul>
+<li><input type="button" onClick="post('c,80,860,1360')" value="Send 36 KHz">
+	c,80,860,1360</li>
+<li><input type="button" onClick="post('c,80,800,1300')" value="Send 38 KHz">
+	c,80,800,1300</li>
+<li><input type="button" onClick="post('c,80,740,1260')" value="Send 40 KHz">
+	c,80,740,1260</li>
+<li><input type="button" onClick="post('c,80,544,884')" value="Send 56 KHz">
+	c,80,544,884</li>
+</ul>
+
+<script type="text/javascript">
+	document.getElementById("f").innerHTML = freq / 1000 / 1000;
+	changeDiv();
+	changeCarrier();
+</script>
+</body>
+</html>
